@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template_string
-import json, uuid, os, sys
+import json, os, sys
 from datetime import datetime
 
 app = Flask(__name__)
@@ -109,4 +109,4 @@ def restart():
     return "Перезапуск…"
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=10000)
+    app.run(host='0.0.0.0', port=10000) 
