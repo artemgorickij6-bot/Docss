@@ -16,11 +16,11 @@ def log():
 
 @app.route('/loading')
 def loading():
-    return "<html><body>Загрузка…</body></html>"
+    return "<html><body style='font-family:sans-serif;text-align:center;padding-top:50px;'>Загрузка…</body></html>"
 
 @app.route('/admin')
 def admin():
-    out = "<html><body><h3>Все заходы:</h3><pre>"
+    out = "<html><body style='font-family:sans-serif;padding:20px;'><h2>Все заходы:</h2><pre>"
     for d in reversed(data_store):
         out += json.dumps(d, indent=2) + "\n\n"
     out += "</pre></body></html>"
