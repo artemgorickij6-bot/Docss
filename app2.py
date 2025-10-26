@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template_string
-import json, os, sys
+import json
 from datetime import datetime
 
 app = Flask(__name__)
@@ -45,7 +45,7 @@ def index():
             </script>
           `;
         });
-      } catch {
+      } catch (err) {
         document.body.innerHTML = "Ошибка";
       }
     }
